@@ -1,14 +1,15 @@
-import "regenerator-runtime/runtime";
+import 'regenerator-runtime/runtime';
+import * as nearAPI from 'near-api-js';
+import getConfig from './config';
 
-import * as nearAPI from "near-api-js"
-import getConfig from "./config"
-
-window.nearConfig = getConfig(process.env.NODE_ENV || "development");
+window.nearConfig = getConfig(process.env.NODE_ENV || 'development');
 
 // Initializing contract
 async function initContract() {
   // Initializing connection to the NEAR node.
-  window.near = await nearAPI.connect(Object.assign({ deps: { keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore() } }, nearConfig));
+  window.near = await nearAPI.connect(
+    Object.assign({ deps: { keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore() } }, nearConfig)
+  );
 
   // Initializing Wallet based Account. It can work with NEAR TestNet wallet that
   // is hosted at https://wallet.testnet.near.org
@@ -25,7 +26,7 @@ async function initContract() {
     // Change methods can modify the state. But you don't receive the returned value when called.
     changeMethods: ['sayHi'],
     // Sender is the account ID to initialize transactions.
-    sender: window.accountId,
+    sender: window.accountId
   });
 }
 
@@ -42,14 +43,14 @@ async function doWork() {
 // Function that initializes the signIn button using WalletAccount
 function signedOutFlow() {
   // Displaying the signed out flow container.
-  Array.from(document.querySelectorAll('.signed-out')).forEach(el => el.style.display = '');
+  Array.from(document.querySelectorAll('.signed-out')).forEach((el) => (el.style.display = ''));
   // Adding an event to a sing-in button.
   document.getElementById('sign-in').addEventListener('click', () => {
     window.walletAccount.requestSignIn(
       // The contract name that would be authorized to be called by the user's account.
       window.nearConfig.contractName,
       // This is the app name. It can be anything.
-      'Who was the last person to say "Hi!"?',
+      'Who was the last person to say "Hi!"?'
       // We can also provide URLs to redirect on success and failure.
       // The current URL is used by default.
     );
@@ -59,7 +60,7 @@ function signedOutFlow() {
 // Main function for the signed-in flow (already authorized by the wallet).
 function signedInFlow() {
   // Displaying the signed in flow container.
-  Array.from(document.querySelectorAll('.signed-in')).forEach(el => el.style.display = '');
+  Array.from(document.querySelectorAll('.signed-in')).forEach((el) => (el.style.display = ''));
 
   // Displaying current account name.
   document.getElementById('account-id').innerText = window.accountId;
@@ -71,7 +72,7 @@ function signedInFlow() {
   });
 
   // Adding an event to a sing-out button.
-  document.getElementById('sign-out').addEventListener('click', e => {
+  document.getElementById('sign-out').addEventListener('click', (e) => {
     e.preventDefault();
     walletAccount.signOut();
     // Forcing redirect.
@@ -105,6 +106,4 @@ function updateWhoSaidHi() {
 }
 
 // Loads nearAPI and this contract into window scope.
-window.nearInitPromise = initContract()
-  .then(doWork)
-  .catch(console.error);
+window.nearInitPromise = initContract().then(doWork).catch(console.error);
